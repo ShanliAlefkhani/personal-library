@@ -6,8 +6,10 @@ import '../bloc.dart';
 import '../event.dart';
 
 class FirstPage extends StatefulWidget {
-  TestBloc  testBloc;
+  TestBloc testBloc;
+
   FirstPage(this.testBloc);
+
   @override
   _FirstPageState createState() => _FirstPageState();
 }
@@ -16,8 +18,6 @@ class _FirstPageState extends State<FirstPage> {
   @override
   void initState() {
     super.initState();
-    Folder.list.add(new Folder("first folder"));
-    Folder.list.add(new Folder("second folder"));
   }
 
   @override
@@ -64,11 +64,6 @@ class _FirstPageState extends State<FirstPage> {
                   title: Text(folder.name),
                   onTap: () {
                     widget.testBloc.add(GoToFolderDetail(folder));
-                    /*Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => FolderDetail(folder)),
-                    );*/
                   },
                 ),
               );
@@ -78,9 +73,78 @@ class _FirstPageState extends State<FirstPage> {
         backgroundColor: Colors.indigo,
         child: Icon(Icons.create_new_folder),
         onPressed: () {
-          Folder.list.add(new Folder("folder x"));
-          debugPrint("injaam");
+          setState(() {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(20.0)), //this right here
+                      child: _report(context));
+                });
+          });
         },
+      ),
+    );
+  }
+
+  Widget _report(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height / 5,
+      decoration: BoxDecoration(
+        color: Colors.cyan,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.create,
+                color: Colors.white,
+              ),
+            ),
+            onSubmitted: (String value) {
+              //inja
+              setState(() {
+                Folder.list.add(new Folder(value));
+              });
+            },
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 30),
+            width: size.width / 3.5,
+            height: size.height / 20,
+            child: RaisedButton(
+              elevation: 5,
+              color: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20.0),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'save',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

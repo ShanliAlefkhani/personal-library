@@ -5,7 +5,7 @@ class Book {
   double rate;
 
   Book(this.url, this.title, this.image, this.description, this.publisher, this.rate, this.authors);
-  Book.first(this.title, this.image, this.authors);
+  Book.first(this.title);
 
   static void makeList(List fetchedBooks) {
     for (int i = 0; i < fetchedBooks.length; i++) {

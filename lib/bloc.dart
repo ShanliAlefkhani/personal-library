@@ -11,9 +11,10 @@ class TestBloc extends Bloc<TestEvent, TestState> {
   @override
   Stream<TestState> mapEventToState(TestEvent event) async* {
     if (event is GoToFolderDetail) {
-      //inja
-      Folder folder = new Folder("heh");
-      yield FolderDetailInit(folder);
+      yield FolderDetailInit(event.folder);
+    }
+    else if (event is GoToBookDetail) {
+      yield BookDetailInit(event.folder, event.book);
     }
     else {
       yield Home();

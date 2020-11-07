@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import 'model/book.dart';
 import 'model/folder.dart';
 
 abstract class TestEvent extends Equatable {
@@ -18,4 +19,13 @@ class GoToFolderDetail extends TestEvent  {
 
   @override
   List<Object> get props => [folder];
+}
+
+class GoToBookDetail extends TestEvent  {
+  final Folder folder;
+  final Book book;
+  GoToBookDetail(this.folder, this.book);
+
+  @override
+  List<Object> get props => [folder, book];
 }

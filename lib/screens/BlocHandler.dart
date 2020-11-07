@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:koobook_project4/model/book.dart';
 import 'package:koobook_project4/model/folder.dart';
 import 'package:koobook_project4/screens/FirstPage.dart';
 import '../bloc.dart';
 import '../state.dart';
+import 'BookDetail.dart';
 import 'FolderDetail.dart';
 
 class TestingPage extends StatefulWidget {
@@ -33,6 +35,11 @@ class _TestingPageState extends State<TestingPage> {
               else if (state is FolderDetailInit) {
                 Folder folder = state.folder;
                 return FolderDetail(testBloc, folder);
+              }
+              else if (state is BookDetailInit) {
+                Folder folder = state.folder;
+                Book book = state.book;
+                return BookDetail(testBloc, folder, book);
               }
               else {
                 return Scaffold(body: Center(child: Text("loading"),),);
