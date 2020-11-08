@@ -19,6 +19,13 @@ class _FolderDetailState extends State<FolderDetail> {
   final Folder folder;
   _FolderDetailState(this.folder);
 
+  final List<String> wallPapers = [
+    "assets/2.jpg",
+    "assets/3.jpg",
+    "assets/4.jpg",
+    "assets/5.jpg"
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +41,22 @@ class _FolderDetailState extends State<FolderDetail> {
         title: Text(folder.name),
         actions: [
           IconButton(
+            icon: Icon(Icons.wallpaper),
+            onPressed: () {
+              setState(() {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(20.0)), //this right here
+                          child: chooseWalpaper(context));
+                    });
+              });
+            },
+          ),
+          IconButton(
               icon: Icon(Icons.keyboard_return),
               onPressed: () => widget.testBloc.add(GoToFirstPage())),
         ],
@@ -46,7 +69,7 @@ class _FolderDetailState extends State<FolderDetail> {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                "assets/2.jpg",
+                folder.currentWallPaper,
                 fit: BoxFit.cover,
                 colorBlendMode: BlendMode.hue,
               ),
@@ -82,7 +105,7 @@ class _FolderDetailState extends State<FolderDetail> {
         backgroundColor: Colors.indigo,
         child: Icon(Icons.add),
         //inja
-        /*onPressed: () {
+        onPressed: () {
           setState(() {
             showDialog(
                 context: context,
@@ -91,11 +114,119 @@ class _FolderDetailState extends State<FolderDetail> {
                       shape: RoundedRectangleBorder(
                           borderRadius:
                           BorderRadius.circular(20.0)), //this right here
-                      child: _report(context));
+                      child: search(context));
                 });
           });
-        },*/
+        },
       ),
+    );
+  }
+
+  Widget chooseWalpaper(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      width: size.width * 5 / 6,
+      height: size.height * 5 / 6,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      child: ListView.builder(
+          itemCount: wallPapers.length,
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 5,
+              margin: EdgeInsets.all(30),
+              child: InkWell(
+                child: Image.asset(
+                  wallPapers[index],
+                  fit: BoxFit.cover,
+                ),
+                onTap: () {
+                  setState(() {
+                    folder.currentWallPaper = wallPapers[index];
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            );
+
+          }),
+    );
+  }
+
+  Widget search(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    String searchName;
+    final int _nextPageThreshold = 3;
+    bool hasNextPage, loading, error;
+    int pageNum;
+    return Container(
+      width: size.width * 5 / 6,
+      height: size.height * 5 / 6,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      child: ListView.builder(
+          itemCount: folder.books.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.all(10),
+                child: TextField(
+                keyboardType: TextInputType.name,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  //prefixText: "Search",
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
+                ),
+                onSubmitted: (String value) {
+                  try {
+                    setState(() {
+                      searchName = value;
+                    });
+                  } catch (exception) {}
+                },
+              ),
+              );
+            }
+            return Card(
+              elevation: 5,
+              margin: EdgeInsets.all(30),
+              child: InkWell(
+                child: Image.asset(
+                  wallPapers[index],
+                  fit: BoxFit.cover,
+                ),
+                onTap: () {
+                  setState(() {
+                    folder.currentWallPaper = wallPapers[index];
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            );
+
+          }),
     );
   }
 }

@@ -116,7 +116,8 @@ class _FirstPageState extends State<FirstPage> {
               ),
             ),
             onSubmitted: (String value) {
-              //inja
+              //inja ke nabayad bashe
+              //inja text esh az qaabl munde
               setState(() {
                 Folder.list.add(new Folder(value));
               });
