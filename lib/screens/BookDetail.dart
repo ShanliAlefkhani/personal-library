@@ -34,8 +34,7 @@ class _BookDetailState extends State<BookDetail> {
               onPressed: () => widget.testBloc.add(GoToFolderDetail(widget.folder))),
         ],
       ),
-      //inja
-      /*body: ListView(
+      body: ListView(
         children: [
           Center(
             child: Container(
@@ -71,7 +70,7 @@ class _BookDetailState extends State<BookDetail> {
             textAlign: TextAlign.center,
           ),
         ],
-      ),*/
+      ),
     );
   }
 }

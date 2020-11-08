@@ -22,5 +22,18 @@ class BookDetailInit extends TestState {
   BookDetailInit(this.folder, this.book);
 }
 
+class SearchPageInit extends TestState {
+  final Folder folder;
+
+  SearchPageInit(this.folder);
+}
+
+class ResultsPageInit extends TestState {
+  final Folder folder;
+  final String searchName;
+
+  ResultsPageInit(this.folder, this.searchName);
+}
+
 class Home extends TestState {
 }

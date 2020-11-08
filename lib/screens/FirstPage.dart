@@ -81,7 +81,7 @@ class _FirstPageState extends State<FirstPage> {
                       shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(20.0)), //this right here
-                      child: _report(context));
+                      child: addFolder(context));
                 });
           });
         },
@@ -89,7 +89,7 @@ class _FirstPageState extends State<FirstPage> {
     );
   }
 
-  Widget _report(BuildContext context) {
+  Widget addFolder(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
       height: size.height / 5,

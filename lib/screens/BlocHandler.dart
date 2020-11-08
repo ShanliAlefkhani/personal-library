@@ -7,6 +7,8 @@ import '../bloc.dart';
 import '../state.dart';
 import 'BookDetail.dart';
 import 'FolderDetail.dart';
+import 'ResultsPage.dart';
+import 'SearchPage.dart';
 
 class TestingPage extends StatefulWidget {
   @override
@@ -40,6 +42,15 @@ class _TestingPageState extends State<TestingPage> {
                 Folder folder = state.folder;
                 Book book = state.book;
                 return BookDetail(testBloc, folder, book);
+              }
+              else if (state is SearchPageInit) {
+                Folder folder = state.folder;
+                return SearchPage(testBloc, folder);
+              }
+              else if (state is ResultsPageInit) {
+                Folder folder = state.folder;
+                String searchName = state.searchName;
+                return ResultsPage(testBloc, folder, searchName);
               }
               else {
                 return Scaffold(body: Center(child: Text("loading"),),);

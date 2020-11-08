@@ -29,3 +29,21 @@ class GoToBookDetail extends TestEvent  {
   @override
   List<Object> get props => [folder, book];
 }
+
+class GoToSearchPage extends TestEvent  {
+  final Folder folder;
+  GoToSearchPage(this.folder);
+
+  @override
+  List<Object> get props => [folder];
+}
+
+class GoToResultsPage extends TestEvent {
+  final Folder folder;
+  final String searchName;
+
+  GoToResultsPage(this.folder, this.searchName);
+
+  @override
+  List<Object> get props => [folder];
+}
