@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:koobook_project4/event.dart';
@@ -7,8 +8,9 @@ import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
 
 class FolderDetail extends StatefulWidget {
-  TestBloc  testBloc;
+  TestBloc testBloc;
   final Folder folder;
+
   FolderDetail(this.testBloc, this.folder);
 
   @override
@@ -17,6 +19,7 @@ class FolderDetail extends StatefulWidget {
 
 class _FolderDetailState extends State<FolderDetail> {
   final Folder folder;
+
   _FolderDetailState(this.folder);
 
   final List<String> wallPapers = [
@@ -49,8 +52,8 @@ class _FolderDetailState extends State<FolderDetail> {
                     builder: (BuildContext context) {
                       return Dialog(
                           shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(20.0)), //this right here
+                              borderRadius: BorderRadius.circular(
+                                  20.0)), //this right here
                           child: chooseWalpaper(context));
                     });
               });
@@ -113,7 +116,7 @@ class _FolderDetailState extends State<FolderDetail> {
                   return Dialog(
                       shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.circular(20.0)), //this right here
+                              BorderRadius.circular(20.0)), //this right here
                       child: search(context));
                 });
           });
@@ -157,17 +160,19 @@ class _FolderDetailState extends State<FolderDetail> {
                 },
               ),
             );
-
           }),
     );
   }
 
+  String searchName;
+  final int _nextPageThreshold = 3;
+  bool hasNextPage = true, loading = true, error = false;
+  int pageNum = 1;
+  List<Book> searchResults = new List();
+
   Widget search(BuildContext context) {
+    debugPrint("injaam");
     final size = MediaQuery.of(context).size;
-    String searchName;
-    final int _nextPageThreshold = 3;
-    bool hasNextPage, loading, error;
-    int pageNum;
     return Container(
       width: size.width * 5 / 6,
       height: size.height * 5 / 6,
@@ -183,50 +188,153 @@ class _FolderDetailState extends State<FolderDetail> {
         ],
       ),
       child: ListView.builder(
-          itemCount: folder.books.length + 1,
+          itemCount: searchResults.length + (hasNextPage ? 1 : 0) + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
+              debugPrint("${searchResults.length} ss");
               return Card(
                 elevation: 5,
                 margin: EdgeInsets.all(10),
                 child: TextField(
-                keyboardType: TextInputType.name,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  //prefixText: "Search",
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.white,
+                  keyboardType: TextInputType.name,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    //prefixText: "Search",
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                   ),
+                  onSubmitted: (String value) {
+                    try {
+                      setState(() {
+                        searchName = value;
+                        debugPrint(value);
+                        hasNextPage = true;
+                        pageNum = 1;
+                        error = false;
+                        loading = true;
+                        searchResults.clear();
+                        fetchBooks();
+                      });
+                    } catch (exception) {}
+                  },
                 ),
-                onSubmitted: (String value) {
-                  try {
-                    setState(() {
-                      searchName = value;
-                    });
-                  } catch (exception) {}
-                },
-              ),
+              );
+            } else {
+              if (index == searchResults.length - _nextPageThreshold) {
+                fetchBooks();
+              }
+              if (index == searchResults.length + 1) {
+                if (error) {
+                  return Center(
+                      child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        loading = true;
+                        error = false;
+                        fetchBooks();
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child:
+                          Text("Error while loading photos, tap to try agin"),
+                    ),
+                  ));
+                } else {
+                  return Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  ));
+                }
+              }
+              final Book book = searchResults[index - 1];
+              return Card(
+                elevation: 5,
+                color: Colors.white,
+                child: ListTile(
+                  title: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Text("${book.title}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.amber.shade700,
+                        )),
+                  ),
+                  subtitle: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            book.authors,
+                            style: TextStyle(color: Colors.grey.shade700),
+                          ),
+                          Text(
+                            "${book.publisher}",
+                            style: TextStyle(color: Colors.grey.shade700),
+                          ),
+                        ]),
+                  ),
+                  trailing: CircleAvatar(
+                    backgroundColor: Colors.blueGrey.shade900,
+                    backgroundImage: NetworkImage(
+                      book.image,
+                    ),
+                  ),
+                  onTap: () {},
+                ),
               );
             }
-            return Card(
-              elevation: 5,
-              margin: EdgeInsets.all(30),
-              child: InkWell(
-                child: Image.asset(
-                  wallPapers[index],
-                  fit: BoxFit.cover,
-                ),
-                onTap: () {
-                  setState(() {
-                    folder.currentWallPaper = wallPapers[index];
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-            );
-
           }),
     );
+  }
+
+  Future<void> fetchBooks() async {
+    debugPrint("injaam fetch");
+    try {
+      Dio dio = new Dio();
+      final response =
+          await dio.get("https://api.koobook.app/books/", queryParameters: {
+        "search": searchName,
+        "fields":
+            "url,Title,ISBN,Image,Description,Publisher,Price,Edition,Hashtags,Rate,Authors",
+        "page": pageNum,
+      });
+      List fetchedBooks = response.data['results'];
+      debugPrint("${fetchedBooks.length}");
+      setState(() {
+        if (response.data['next'] == null) {
+          hasNextPage = false;
+        } else {
+          pageNum++;
+        }
+        loading = false;
+        for (int i = 0; i < fetchedBooks.length; i++) {
+          String authorsName = "";
+          for (int j = 0; j < fetchedBooks[i]['Authors'].length; j++) {
+            authorsName += fetchedBooks[i]['Authors'][j]["Name"] + " ";
+          }
+          Book book = new Book(
+              fetchedBooks[i]['url'],
+              fetchedBooks[i]['Title'],
+              fetchedBooks[i]['Image'],
+              fetchedBooks[i]['Description'],
+              fetchedBooks[i]['Publisher'],
+              fetchedBooks[i]['Rate'],
+              authorsName);
+          searchResults.add(book);
+        }
+        debugPrint("${searchResults.length}");
+        return true;
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+        error = true;
+      });
+    }
   }
 }
