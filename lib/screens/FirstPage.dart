@@ -16,13 +16,7 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-
   Color _color1 = HexColor("#666600");
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +24,10 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _color1,
-        title: Text("Personal Page", style: TextStyle(color: Colors.white),),
+        title: Text(
+          "Personal Page",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       backgroundColor: Colors.grey,
       body: Stack(children: [
@@ -41,7 +38,7 @@ class _FirstPageState extends State<FirstPage> {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                "assets/download.jpg",
+                "assets/1.jpg",
                 fit: BoxFit.cover,
                 colorBlendMode: BlendMode.hue,
               ),
@@ -64,7 +61,10 @@ class _FirstPageState extends State<FirstPage> {
                 elevation: 5,
                 color: Colors.white,
                 child: ListTile(
-                  leading: Icon(Icons.folder, color: _color1,),
+                  leading: Icon(
+                    Icons.folder,
+                    color: _color1,
+                  ),
                   title: Text(folder.name),
                   onTap: () {
                     widget.testBloc.add(GoToFolderDetail(folder));
@@ -83,8 +83,7 @@ class _FirstPageState extends State<FirstPage> {
                 builder: (BuildContext context) {
                   return Dialog(
                       shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20.0)), //this right here
+                          borderRadius: BorderRadius.circular(20.0)),
                       child: addFolder(context));
                 });
           });
@@ -92,6 +91,8 @@ class _FirstPageState extends State<FirstPage> {
       ),
     );
   }
+
+  String name;
 
   Widget addFolder(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -120,11 +121,7 @@ class _FirstPageState extends State<FirstPage> {
               ),
             ),
             onSubmitted: (String value) {
-              //inja ke nabayad bashe
-              //inja text esh az qaabl munde
-              setState(() {
-                Folder.list.add(new Folder(value));
-              });
+              name = value;
             },
           ),
           Container(
@@ -138,6 +135,9 @@ class _FirstPageState extends State<FirstPage> {
                 borderRadius: new BorderRadius.circular(20.0),
               ),
               onPressed: () async {
+                setState(() {
+                  Folder.list.add(new Folder(name));
+                });
                 Navigator.pop(context);
               },
               child: Text(

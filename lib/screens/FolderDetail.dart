@@ -15,28 +15,18 @@ class FolderDetail extends StatefulWidget {
   FolderDetail(this.testBloc, this.folder);
 
   @override
-  _FolderDetailState createState() => _FolderDetailState(folder);
+  _FolderDetailState createState() => _FolderDetailState();
 }
 
 class _FolderDetailState extends State<FolderDetail> {
   Color _color1 = HexColor("#8a8a01");
-
-  final Folder folder;
-
-  _FolderDetailState(this.folder);
-
   final List<String> wallPapers = [
     "assets/2.jpg",
-    "assets/3.jpg",
     "assets/4.jpg",
-    "assets/5.jpg"
+    "assets/5.jpg",
+    "assets/6.jpg",
+    "assets/7.jpg"
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    //folder.addBook(new Book.first("first book"));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +35,7 @@ class _FolderDetailState extends State<FolderDetail> {
       appBar: AppBar(
         backgroundColor: _color1,
         centerTitle: false,
-        title: Text(folder.name),
+        title: Text(widget.folder.name),
         actions: [
           IconButton(
             icon: Icon(Icons.create),
@@ -56,8 +46,7 @@ class _FolderDetailState extends State<FolderDetail> {
                     builder: (BuildContext context) {
                       return Dialog(
                           shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(20.0)), //this right here
+                              borderRadius: BorderRadius.circular(20.0)),
                           child: changeName(context));
                     });
               });
@@ -72,8 +61,7 @@ class _FolderDetailState extends State<FolderDetail> {
                     builder: (BuildContext context) {
                       return Dialog(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  20.0)), //this right here
+                              borderRadius: BorderRadius.circular(20.0)),
                           child: chooseWalpaper(context));
                     });
               });
@@ -92,7 +80,7 @@ class _FolderDetailState extends State<FolderDetail> {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                folder.currentWallPaper,
+                widget.folder.currentWallPaper,
                 fit: BoxFit.cover,
                 colorBlendMode: BlendMode.hue,
               ),
@@ -108,9 +96,9 @@ class _FolderDetailState extends State<FolderDetail> {
           ),
         ),
         ListView.builder(
-            itemCount: folder.books.length,
+            itemCount: widget.folder.books.length,
             itemBuilder: (context, index) {
-              final Book book = folder.books[index];
+              final Book book = widget.folder.books[index];
               return Card(
                 elevation: 5,
                 color: Colors.white,
@@ -120,16 +108,20 @@ class _FolderDetailState extends State<FolderDetail> {
                     color: _color1,
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.remove, color: _color1,),
+                    icon: Icon(
+                      Icons.remove,
+                      color: _color1,
+                    ),
                     onPressed: () {
                       setState(() {
-                        folder.books.removeAt(index);
+                        widget.folder.books.removeAt(index);
                       });
                     },
                   ),
                   title: Text(book.title),
                   onTap: () {
-                    widget.testBloc.add(GoToBookDetail(this.folder, book));
+                    widget.testBloc
+                        .add(GoToBookDetail(this.widget.folder, index));
                   },
                 ),
               );
@@ -139,7 +131,7 @@ class _FolderDetailState extends State<FolderDetail> {
         backgroundColor: _color1,
         child: Icon(Icons.add),
         onPressed: () {
-          widget.testBloc.add(GoToSearchPage(folder));
+          widget.testBloc.add(GoToSearchPage(widget.folder));
         },
       ),
     );
@@ -174,7 +166,7 @@ class _FolderDetailState extends State<FolderDetail> {
                 ),
                 onTap: () {
                   setState(() {
-                    folder.currentWallPaper = wallPapers[index];
+                    widget.folder.currentWallPaper = wallPapers[index];
                     Navigator.pop(context);
                   });
                 },
@@ -183,6 +175,8 @@ class _FolderDetailState extends State<FolderDetail> {
           }),
     );
   }
+
+  String name;
 
   Widget changeName(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -211,9 +205,7 @@ class _FolderDetailState extends State<FolderDetail> {
               ),
             ),
             onSubmitted: (String value) {
-              setState(() {
-                widget.folder.name = value;
-              });
+              name = value;
             },
           ),
           Container(
@@ -227,6 +219,9 @@ class _FolderDetailState extends State<FolderDetail> {
                 borderRadius: new BorderRadius.circular(20.0),
               ),
               onPressed: () async {
+                setState(() {
+                  widget.folder.name = name;
+                });
                 Navigator.pop(context);
               },
               child: Text(

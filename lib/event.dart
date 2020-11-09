@@ -13,25 +13,28 @@ class GoToFirstPage extends TestEvent {
   List<Object> get props => [];
 }
 
-class GoToFolderDetail extends TestEvent  {
+class GoToFolderDetail extends TestEvent {
   final Folder folder;
+
   GoToFolderDetail(this.folder);
 
   @override
   List<Object> get props => [folder];
 }
 
-class GoToBookDetail extends TestEvent  {
+class GoToBookDetail extends TestEvent {
   final Folder folder;
-  final Book book;
-  GoToBookDetail(this.folder, this.book);
+  final int index;
+
+  GoToBookDetail(this.folder, this.index);
 
   @override
-  List<Object> get props => [folder, book];
+  List<Object> get props => [folder, index];
 }
 
-class GoToSearchPage extends TestEvent  {
+class GoToSearchPage extends TestEvent {
   final Folder folder;
+
   GoToSearchPage(this.folder);
 
   @override

@@ -17,9 +17,9 @@ class FolderDetailInit extends TestState {
 
 class BookDetailInit extends TestState {
   final Folder folder;
-  final Book book;
+  final int index;
 
-  BookDetailInit(this.folder, this.book);
+  BookDetailInit(this.folder, this.index);
 }
 
 class SearchPageInit extends TestState {
@@ -35,5 +35,4 @@ class ResultsPageInit extends TestState {
   ResultsPageInit(this.folder, this.searchName);
 }
 
-class Home extends TestState {
-}
+class Home extends TestState {}

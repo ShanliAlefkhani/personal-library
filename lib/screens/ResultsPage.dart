@@ -13,14 +13,13 @@ class ResultsPage extends StatefulWidget {
   final String searchName;
 
   ResultsPage(this.testBloc, this.folder, this.searchName);
+
   @override
   _ResultsPageState createState() => _ResultsPageState();
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-
   Color _color1 = HexColor("#de1b1b");
-
   final int _nextPageThreshold = 3;
   bool hasNextPage, loading, error;
   int pageNum;
@@ -40,9 +39,10 @@ class _ResultsPageState extends State<ResultsPage> {
     try {
       Dio dio = new Dio();
       final response =
-      await dio.get("https://api.koobook.app/books/", queryParameters: {
+          await dio.get("https://api.koobook.app/books/", queryParameters: {
         "search": widget.searchName,
-        "fields": "url,Title,ISBN,Image,Description,Publisher,Price,Edition,Hashtags,Rate,Authors",
+        "fields":
+            "url,Title,ISBN,Image,Description,Publisher,Price,Edition,Hashtags,Rate,Authors",
         "page": pageNum,
       });
       List fetchedBooks = response.data['results'];
@@ -52,22 +52,10 @@ class _ResultsPageState extends State<ResultsPage> {
         } else {
           pageNum++;
         }
-        loading = false;
         for (int i = 0; i < fetchedBooks.length; i++) {
-          String authorsName = "";
-          for (int j = 0; j < fetchedBooks[i]['Authors'].length; j++) {
-            authorsName += fetchedBooks[i]['Authors'][j]["Name"] + " ";
-          }
-          Book book = new Book(
-              fetchedBooks[i]['url'],
-              fetchedBooks[i]['Title'],
-              fetchedBooks[i]['Image'],
-              fetchedBooks[i]['Description'],
-              fetchedBooks[i]['Publisher'],
-              fetchedBooks[i]['Rate'],
-              authorsName);
-          bookList.add(book);
+          bookList.add(Book.makeBook(fetchedBooks[i]));
         }
+        loading = false;
         return true;
       });
     } catch (e) {
@@ -80,10 +68,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.blueGrey.shade900,
-        body: getBody()
-    );
+    return Scaffold(backgroundColor: Colors.blueGrey.shade900, body: getBody());
   }
 
   Widget getBody() {
@@ -91,24 +76,24 @@ class _ResultsPageState extends State<ResultsPage> {
       if (loading) {
         return Center(
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ));
+          padding: const EdgeInsets.all(8),
+          child: CircularProgressIndicator(),
+        ));
       } else if (error) {
         return Center(
             child: InkWell(
-              onTap: () {
-                setState(() {
-                  loading = true;
-                  error = false;
-                  fetchBooks();
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text("Error while loading photos, tap to try agin"),
-              ),
-            ));
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text("Error while loading photos, tap to try agin"),
+          ),
+          onTap: () {
+            setState(() {
+              loading = true;
+              error = false;
+              fetchBooks();
+            });
+          },
+        ));
       }
     } else {
       return ListView.builder(
@@ -121,25 +106,24 @@ class _ResultsPageState extends State<ResultsPage> {
               if (error) {
                 return Center(
                     child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          loading = true;
-                          error = false;
-                          fetchBooks();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                            "Error while loading photos, tap to try agin"),
-                      ),
-                    ));
+                  onTap: () {
+                    setState(() {
+                      loading = true;
+                      error = false;
+                      fetchBooks();
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text("Error while loading photos, tap to try agin"),
+                  ),
+                ));
               } else {
                 return Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: CircularProgressIndicator(),
-                    ));
+                  padding: const EdgeInsets.all(8),
+                  child: CircularProgressIndicator(),
+                ));
               }
             }
             final Book book = bookList[index];
@@ -162,13 +146,11 @@ class _ResultsPageState extends State<ResultsPage> {
                       children: [
                         Text(
                           book.authors,
-                          style:
-                          TextStyle(color: Colors.grey.shade700),
+                          style: TextStyle(color: Colors.grey.shade700),
                         ),
                         Text(
                           "${book.publisher}",
-                          style:
-                          TextStyle(color: Colors.grey.shade700),
+                          style: TextStyle(color: Colors.grey.shade700),
                         ),
                       ]),
                 ),

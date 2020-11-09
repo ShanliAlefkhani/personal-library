@@ -10,14 +10,13 @@ class SearchPage extends StatefulWidget {
   final Folder folder;
 
   SearchPage(this.testBloc, this.folder);
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   Color _color1 = HexColor("#de1b1b");
-
   String s;
 
   @override
