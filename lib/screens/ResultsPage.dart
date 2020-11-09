@@ -5,6 +5,7 @@ import 'package:koobook_project4/event.dart';
 import 'package:koobook_project4/model/book.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
+import '../hexColor.dart';
 
 class ResultsPage extends StatefulWidget {
   TestBloc testBloc;
@@ -17,6 +18,9 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
+
+  Color _color1 = HexColor("#de1b1b");
+
   final int _nextPageThreshold = 3;
   bool hasNextPage, loading, error;
   int pageNum;
@@ -148,7 +152,7 @@ class _ResultsPageState extends State<ResultsPage> {
                   child: Text("${book.title}",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Colors.amber.shade700,
+                        color: _color1,
                       )),
                 ),
                 subtitle: Directionality(

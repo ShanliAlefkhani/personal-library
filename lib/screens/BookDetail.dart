@@ -4,6 +4,7 @@ import 'package:koobook_project4/model/book.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
 import '../event.dart';
+import '../hexColor.dart';
 
 class BookDetail extends StatefulWidget {
   TestBloc  testBloc;
@@ -17,16 +18,19 @@ class BookDetail extends StatefulWidget {
 }
 
 class _BookDetailState extends State<BookDetail> {
+
+  Color _color1 = HexColor("#b5af0b");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey.shade900,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.amber.shade700,
+        backgroundColor: _color1,
         title: Text(
           widget.book.title,
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -50,12 +54,12 @@ class _BookDetailState extends State<BookDetail> {
           ),
           Text(
             widget.book.authors,
-            style: TextStyle(color: Colors.grey, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
           ),
           Text(
             widget.book.publisher,
-            style: TextStyle(color: Colors.grey, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
           ),
           Directionality(
@@ -66,7 +70,7 @@ class _BookDetailState extends State<BookDetail> {
               )),
           Text(
             "rate: ${widget.book.rate}",
-            style: TextStyle(color: Colors.amber.shade700, fontSize: 20),
+            style: TextStyle(color: _color1, fontSize: 20),
             textAlign: TextAlign.center,
           ),
         ],

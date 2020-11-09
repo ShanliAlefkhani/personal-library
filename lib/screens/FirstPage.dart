@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
 import '../event.dart';
+import '../hexColor.dart';
 
 class FirstPage extends StatefulWidget {
   TestBloc testBloc;
@@ -15,6 +16,9 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+
+  Color _color1 = HexColor("#666600");
+
   @override
   void initState() {
     super.initState();
@@ -25,8 +29,8 @@ class _FirstPageState extends State<FirstPage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        title: Text("Personal Page"),
+        backgroundColor: _color1,
+        title: Text("Personal Page", style: TextStyle(color: Colors.white),),
       ),
       backgroundColor: Colors.grey,
       body: Stack(children: [
@@ -60,7 +64,7 @@ class _FirstPageState extends State<FirstPage> {
                 elevation: 5,
                 color: Colors.white,
                 child: ListTile(
-                  leading: Icon(Icons.folder),
+                  leading: Icon(Icons.folder, color: _color1,),
                   title: Text(folder.name),
                   onTap: () {
                     widget.testBloc.add(GoToFolderDetail(folder));
@@ -70,7 +74,7 @@ class _FirstPageState extends State<FirstPage> {
             }),
       ]),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.indigo,
+        backgroundColor: _color1,
         child: Icon(Icons.create_new_folder),
         onPressed: () {
           setState(() {
@@ -94,7 +98,7 @@ class _FirstPageState extends State<FirstPage> {
     return Container(
       height: size.height / 5,
       decoration: BoxDecoration(
-        color: Colors.cyan,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -108,11 +112,11 @@ class _FirstPageState extends State<FirstPage> {
         children: <Widget>[
           TextField(
             keyboardType: TextInputType.name,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               prefixIcon: Icon(
                 Icons.create,
-                color: Colors.white,
+                color: _color1,
               ),
             ),
             onSubmitted: (String value) {
@@ -129,7 +133,7 @@ class _FirstPageState extends State<FirstPage> {
             height: size.height / 20,
             child: RaisedButton(
               elevation: 5,
-              color: Colors.red,
+              color: _color1,
               shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(20.0),
               ),

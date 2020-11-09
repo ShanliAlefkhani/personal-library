@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
 import '../event.dart';
+import '../hexColor.dart';
 
 class SearchPage extends StatefulWidget {
   TestBloc testBloc;
@@ -15,6 +16,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
 
+  Color _color1 = HexColor("#de1b1b");
+
   String s;
 
   @override
@@ -22,7 +25,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Colors.blueGrey.shade900,
       appBar: AppBar(
-        backgroundColor: Colors.amber.shade700,
+        backgroundColor: _color1,
         title: Text("Search Books"),
       ),
       body: Container(

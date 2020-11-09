@@ -6,6 +6,7 @@ import 'package:koobook_project4/event.dart';
 import 'package:koobook_project4/model/book.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
+import '../hexColor.dart';
 
 class FolderDetail extends StatefulWidget {
   TestBloc testBloc;
@@ -18,6 +19,8 @@ class FolderDetail extends StatefulWidget {
 }
 
 class _FolderDetailState extends State<FolderDetail> {
+  Color _color1 = HexColor("#8a8a01");
+
   final Folder folder;
 
   _FolderDetailState(this.folder);
@@ -40,9 +43,26 @@ class _FolderDetailState extends State<FolderDetail> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        backgroundColor: _color1,
+        centerTitle: false,
         title: Text(folder.name),
         actions: [
+          IconButton(
+            icon: Icon(Icons.create),
+            onPressed: () {
+              setState(() {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(20.0)), //this right here
+                          child: changeName(context));
+                    });
+              });
+            },
+          ),
           IconButton(
             icon: Icon(Icons.wallpaper),
             onPressed: () {
@@ -95,7 +115,18 @@ class _FolderDetailState extends State<FolderDetail> {
                 elevation: 5,
                 color: Colors.white,
                 child: ListTile(
-                  leading: Icon(Icons.book),
+                  leading: Icon(
+                    Icons.book,
+                    color: _color1,
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.remove, color: _color1,),
+                    onPressed: () {
+                      setState(() {
+                        folder.books.removeAt(index);
+                      });
+                    },
+                  ),
                   title: Text(book.title),
                   onTap: () {
                     widget.testBloc.add(GoToBookDetail(this.folder, book));
@@ -105,7 +136,7 @@ class _FolderDetailState extends State<FolderDetail> {
             }),
       ]),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.indigo,
+        backgroundColor: _color1,
         child: Icon(Icons.add),
         onPressed: () {
           widget.testBloc.add(GoToSearchPage(folder));
@@ -150,6 +181,65 @@ class _FolderDetailState extends State<FolderDetail> {
               ),
             );
           }),
+    );
+  }
+
+  Widget changeName(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height / 5,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.create,
+                color: _color1,
+              ),
+            ),
+            onSubmitted: (String value) {
+              setState(() {
+                widget.folder.name = value;
+              });
+            },
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 30),
+            width: size.width / 3.5,
+            height: size.height / 20,
+            child: RaisedButton(
+              elevation: 5,
+              color: _color1,
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20.0),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'save',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
