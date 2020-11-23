@@ -27,18 +27,17 @@ class _BookDetailState extends State<BookDetail> {
   initState() {
     super.initState();
     book = widget.folder.books[widget.index];
-    if (book.description == null) {
+    if (book.isbn != null && book.description == null) {
       loading = true;
       error = false;
-      fetchBooks();
-    }
-    else {
+      fetchBook();
+    } else {
       loading = false;
       error = false;
     }
   }
 
-  Future<void> fetchBooks() async {
+  Future<void> fetchBook() async {
     try {
       Dio dio = new Dio();
       final response =
@@ -76,69 +75,172 @@ class _BookDetailState extends State<BookDetail> {
         ],
       ),
       body: getBody(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: _color1,
+        child: Icon(Icons.note_add),
+        onPressed: () {
+          setState(() {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: addNote(context));
+                });
+          });
+        },
+      ),
     );
   }
 
   Widget getBody() {
-    if (loading) {
-      return Center(
-          child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: CircularProgressIndicator(),
-      ));
-    } else if (error) {
-      return Center(
-          child: InkWell(
-        onTap: () {
-          setState(() {
-            loading = true;
-            error = false;
-            fetchBooks();
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text("Error while loading photos, tap to try agin"),
+    if (book.isbn == null) {
+      return Container(
+        margin: EdgeInsets.all(20),
+        child: Text(
+          "notes: " + book.note,
+          style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-      ));
+      );
     } else {
-      return ListView(
-        children: [
-          Center(
-            child: Container(
-              margin: EdgeInsets.all(20),
-              height: 300,
-              width: 300,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(book.image),
+      if (loading) {
+        return Center(
+            child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: CircularProgressIndicator(),
+        ));
+      } else if (error) {
+        return Center(
+            child: InkWell(
+          onTap: () {
+            setState(() {
+              loading = true;
+              error = false;
+              fetchBook();
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text("Error while loading photos, tap to try agin"),
+          ),
+        ));
+      } else {
+        return Container(
+          margin: EdgeInsets.all(20),
+          child: ListView(
+            children: [
+              Center(
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(book.image),
+                    ),
+                  ),
+                ),
+              ),
+              Text(
+                book.authors,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                book.publisher,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text(
+                    book.description,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  )),
+              Text(
+                "rate: ${book.rate}",
+                style: TextStyle(color: _color1, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Container(
+                  height: 0.5,
+                  color: Colors.grey,
+                ),
+              ),
+              Text(
+                "notes: " + book.note,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
+  String name = "";
+
+  Widget addNote(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height / 5,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.create,
+                color: _color1,
+              ),
+            ),
+            onSubmitted: (String value) {
+              name = value;
+            },
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 30),
+            width: size.width / 3.5,
+            height: size.height / 20,
+            child: RaisedButton(
+              elevation: 5,
+              color: _color1,
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20.0),
+              ),
+              onPressed: () async {
+                setState(() {
+                  book.note = name;
+                });
+                Navigator.pop(context);
+              },
+              child: Text(
+                'save',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
                 ),
               ),
             ),
           ),
-          Text(
-            book.authors,
-            style: TextStyle(color: Colors.white, fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            book.publisher,
-            style: TextStyle(color: Colors.white, fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          Directionality(
-              textDirection: TextDirection.rtl,
-              child: Text(
-                book.description,
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              )),
-          Text(
-            "rate: ${book.rate}",
-            style: TextStyle(color: _color1, fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
         ],
-      );
-    }
+      ),
+    );
   }
 }

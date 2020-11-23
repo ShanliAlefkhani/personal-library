@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:koobook_project4/model/book.dart';
 import 'package:koobook_project4/model/folder.dart';
 import 'package:koobook_project4/screens/FirstPage.dart';
@@ -31,23 +30,7 @@ class _TestingPageState extends State<TestingPage> {
       body: Center(child: BlocBuilder<TestBloc, TestState>(
         builder: (context, state) {
           if (state is Home) {
-            return FutureBuilder(
-              future: Hive.openBox('folders'),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  }
-                  else {
-                    return FirstPage(testBloc);
-                  }
-                }
-                else {
-                  return Scaffold();
-                }
-              },
-            );
-            return Scaffold();
+            return FirstPage(testBloc);
           } else if (state is FolderDetailInit) {
             Folder folder = state.folder;
             return FolderDetail(testBloc, folder);
@@ -72,11 +55,5 @@ class _TestingPageState extends State<TestingPage> {
         },
       )),
     );
-  }
-
-  @override
-  void dispose() {
-    Hive.close();
-    super.dispose();
   }
 }

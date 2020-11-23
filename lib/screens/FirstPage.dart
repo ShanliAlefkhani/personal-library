@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:koobook_project4/model/folder.dart';
 import '../bloc.dart';
 import '../event.dart';
@@ -93,7 +92,7 @@ class _FirstPageState extends State<FirstPage> {
     );
   }
 
-  String name;
+  String name = "";
 
   Widget addFolder(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -137,8 +136,6 @@ class _FirstPageState extends State<FirstPage> {
               ),
               onPressed: () async {
                 setState(() {
-                  //inja hive
-                  Hive.box('folders').add(new Folder(name));
                   Folder.list.add(new Folder(name));
                 });
                 Navigator.pop(context);

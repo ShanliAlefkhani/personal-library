@@ -1,8 +1,10 @@
 class Book {
   String url, title, image, description, publisher, authors, isbn;
   double rate;
+  String note = "";
 
   Book(this.isbn, this.title, this.image, this.publisher, this.authors);
+  Book.second(this.title);
 
   static Book makeBook(var fetchedBook) {
     String authorsName = "";
