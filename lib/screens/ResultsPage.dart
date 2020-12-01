@@ -127,7 +127,7 @@ class _ResultsPageState extends State<ResultsPage> {
             if (index == 0) {
               return newBookCard(context);
             } else {
-              if (index - 1 == bookList.length) {
+              if (index == bookList.length) {
                 if (error) {
                   return Center(
                       child: InkWell(
