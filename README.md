@@ -2,8 +2,6 @@
 
 A personal library written using Flutter during Koobook Flutter internship.
 
-A new Flutter application.
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
