@@ -1,4 +1,6 @@
-# koobook_project4
+# personal-library
+
+A personal library written using Flutter during Koobook Flutter internship.
 
 A new Flutter application.
 
